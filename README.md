@@ -32,7 +32,7 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ## Environment variables
 
-Create a `.env.local` file for local secrets. Never commit it to GitHub.
+Create a `.env.local` file for local secrets.
 
 ```env
 FOOTBALL_DATA_API_KEY=your_api_key_here
