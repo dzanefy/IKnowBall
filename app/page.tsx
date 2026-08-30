@@ -6,6 +6,7 @@ type Fixture = {
   id: number;
   utcDate: string;
   status: string;
+  matchday: number | null;
   homeTeam: {
     name: string;
   };
@@ -20,10 +21,39 @@ type Fixture = {
   };
 };
 
+function formatFixtureStatus(status: string) {
+  const labels: Record<string, string> = {
+    TIMED: "Upcoming",
+    SCHEDULED: "Upcoming",
+    IN_PLAY: "Live",
+    PAUSED: "Half-time",
+    FINISHED: "Finished",
+    POSTPONED: "Postponed",
+    CANCELLED: "Cancelled",
+    SUSPENDED: "Suspended",
+  };
+
+  return labels[status] ?? status.replaceAll("_", " ");
+}
+
 export default function Home() {
   const [fixtures, setFixtures] = useState<Fixture[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+    const fixturesByMatchday = fixtures.reduce<Record<string, Fixture[]>>(
+    (groups, fixture) => {
+      const matchday = fixture.matchday ?? "Unknown";
+
+      if (!groups[matchday]) {
+        groups[matchday] = [];
+      }
+
+      groups[matchday].push(fixture);
+
+      return groups;
+    },
+    {}
+  );
 
   useEffect(() => {
     fetch("/api/fixtures")
@@ -69,32 +99,58 @@ export default function Home() {
             <p className="text-slate-400">No fixtures available yet.</p>
           )}
 
-          <div className="grid gap-4 md:grid-cols-2">
-            {fixtures.map((fixture) => (
-              <article
-                key={fixture.id}
-                className="rounded-2xl border border-slate-800 bg-slate-900 p-6"
-              >
-                <p className="text-sm text-slate-400">
-                  {new Date(fixture.utcDate).toLocaleString()}
-                </p>
+          {Object.entries(fixturesByMatchday)
+            .sort(([a], [b]) => {
+              if (a === "Unknown") return 1;
+              if (b === "Unknown") return -1;
 
-                <div className="mt-5 flex items-center justify-between gap-4">
-                  <span className="font-medium">{fixture.homeTeam.name}</span>
-                  <span className="text-sm text-slate-500">vs</span>
-                  <span className="text-right font-medium">
-                    {fixture.awayTeam.name}
-                  </span>
-                </div>
+              return Number(a) - Number(b);
+            })
+            .map(([matchday, matchdayFixtures]) => (
+              <div key={matchday} className="mb-8">
+                <h3 className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">
+                  {matchday === "Unknown" ? "Matchday Unknown" : `Gameweek ${matchday}`}
+                </h3>
 
-                <p className="mt-5 text-sm text-lime-400">
-                  {fixture.status}
-                </p>
-              </article>
+               <div className="grid gap-4 md:grid-cols-2">
+  {matchdayFixtures.map((fixture) => {
+    const score = fixture.score?.fullTime;
+    const hasScore = score?.home != null && score?.away != null;
+
+    return (
+      <article
+        key={fixture.id}
+        className="rounded-2xl border border-slate-800 bg-slate-900 p-6"
+      >
+        <p className="text-sm text-slate-400">
+          {new Date(fixture.utcDate).toLocaleString()}
+        </p>
+
+        <div className="mt-5 flex items-center justify-between gap-4">
+          <span className="font-medium">
+            {fixture.homeTeam.name}
+          </span>
+
+          <span className="text-lg font-bold">
+            {hasScore ? `${score.home} – ${score.away}` : "vs"}
+          </span>
+
+          <span className="text-right font-medium">
+            {fixture.awayTeam.name}
+          </span>
+        </div>
+
+                      <p className="mt-5 text-sm text-lime-400">
+                        {formatFixtureStatus(fixture.status)}
+                      </p>
+      </article>
+    );
+  })}
+</div>
+              </div>
             ))}
-          </div>
         </section>
       </div>
     </main>
   );
-}
+} 

@@ -35,7 +35,7 @@ chore: complete initial project foundation
 
 ## Milestone 2 — Connect football data
 
-**Status:** `[~] In progress`
+**Status:** `[x] Complete`
 
 **Goal:** Retrieve real Premier League fixtures securely from football-data.org.
 
@@ -43,11 +43,14 @@ chore: complete initial project foundation
 
 - [x] Create `.env.example` containing `FOOTBALL_DATA_API_KEY=`.
 - [x] Confirm `.env.local` contains the real key and is ignored by Git.
-- [ ] Create `app/api/fixtures/route.ts`.
-- [ ] Send the API key only from the server.
-- [ ] Request Premier League fixtures.
-- [ ] Add friendly error handling.
-- [ ] Test `/api/fixtures` in the browser.
+- [x] Create `app/api/fixtures/route.ts`.
+- [x] Send the API key only from the server.
+- [x] Request Premier League fixtures.
+- [x] Add friendly error handling.
+- [ ] Add Footballdata.io as a current-season enrichment provider.
+- [ ] Match provider fixtures using teams and kickoff time, not vendor IDs alone.
+- [ ] Fall back to football-data.org when Footballdata.io is unavailable.
+- [x] Test `/api/fixtures` in the browser.
 
 ### Complete when
 
@@ -65,7 +68,7 @@ feat: connect premier league fixture data
 
 ## Milestone 3 — Display real fixtures
 
-**Status:** `[ ] Not started`
+**Status:** `[~] In Progress`
 
 **Goal:** Replace the default homepage with an initial iknowball fixture experience.
 
@@ -75,6 +78,9 @@ feat: connect premier league fixture data
 - [ ] Add a fixture card component.
 - [ ] Display home team, away team, date and status.
 - [ ] Display score when available.
+- [ ] Show goal scorers and scoring minutes for completed matches.
+- [ ] Show missed penalties for completed matches.
+- [ ] Show red cards and dismissal minutes for completed matches.
 - [ ] Add loading and error states.
 - [ ] Add an empty-state message.
 - [ ] Make the page responsive on mobile.
@@ -83,6 +89,7 @@ feat: connect premier league fixture data
 
 - Real Premier League fixtures appear at the homepage.
 - The page remains usable if the API is slow or unavailable.
+- Event details are shown only for completed matches and display an unavailable state when the provider does not supply them.
 
 **Suggested commit:**
 

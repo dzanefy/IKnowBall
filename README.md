@@ -18,7 +18,7 @@ iknowball is a public English Premier League prediction web app. Users can choos
 - TypeScript
 - Tailwind CSS
 - PostgreSQL and Prisma
-- Football-data API provider
+- football-data.org and Footballdata.io providers
 - Vercel deployment
 
 ## Run locally
@@ -36,6 +36,7 @@ Create a `.env.local` file for local secrets. Never commit it to GitHub.
 
 ```env
 FOOTBALL_DATA_API_KEY=your_api_key_here
+FOOTBALLDATA_IO_API_KEY=your_footballdata_io_key_here
 DATABASE_URL=your_database_url_here
 ```
 
