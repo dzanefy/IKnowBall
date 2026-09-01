@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import FixtureCard, { type Fixture } from "@/components/FixtureCard";
+import AppHeader from "@/components/AppHeader";
 
 export default function Home() {
   const [fixtures, setFixtures] = useState<Fixture[]>([]);
@@ -43,6 +44,9 @@ export default function Home() {
   }, []);
 
   return (
+  <>
+    <AppHeader />
+
     <main className="min-h-screen bg-slate-950 px-6 py-12 text-white">
       <div className="mx-auto max-w-5xl">
         <p className="mb-3 text-sm font-semibold uppercase tracking-[0.3em] text-lime-400">
@@ -88,6 +92,7 @@ export default function Home() {
             ))}
         </section>
       </div>
-    </main>
-  );
+        </main>
+  </>
+);
 } 
