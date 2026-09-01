@@ -8,6 +8,7 @@ import TeamGrid from "@/components/TeamGrid";
 import FixtureFilters from "@/components/FixtureFilters";
 import { premierLeagueTeams } from "@/lib/teams";
 import type { FormEntry, FormResult } from "@/components/ClubCard";
+import { createForecast } from "@/lib/forecast";
 
 function normalizeTeamName(name: string) {
   return name
@@ -57,6 +58,31 @@ export default function Home() {
       }),
     [fixtures, selectedGameweeks, selectedTeams]
   );
+
+  const forecastsByFixture = useMemo(() => {
+  return Object.fromEntries(
+    fixtures.map((fixture) => [
+      fixture.id,
+      createForecast(
+        fixture.homeTeam.name,
+        fixture.awayTeam.name,
+        fixtures
+          .filter(
+            (item) =>
+              item.status === "FINISHED" &&
+              new Date(item.utcDate) < new Date(fixture.utcDate)
+          )
+          .map((item) => ({
+            homeTeam: item.homeTeam.name,
+            awayTeam: item.awayTeam.name,
+            homeScore: item.score?.fullTime?.home ?? null,
+            awayScore: item.score?.fullTime?.away ?? null,
+            status: item.status,
+          }))
+      ),
+    ])
+  );
+}, [fixtures]);
 
   const formByTeam = fixtures.reduce<Record<string, FormEntry[]>>(
     (forms, fixture) => {
@@ -211,6 +237,7 @@ export default function Home() {
                       key={fixture.id}
                       fixture={fixture}
                       formByTeam={formByTeam}
+                      forecast={forecastsByFixture[fixture.id]}
                     />
                   ))}
                 </div>
