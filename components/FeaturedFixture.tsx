@@ -1,6 +1,6 @@
-import Image from "next/image";
 import type { Fixture } from "@/components/FixtureCard";
 import StatusBadge from "@/components/StatusBadge";
+import ClubCard from "@/components/ClubCard";
 
 type FeaturedFixtureProps = {
   fixture: Fixture;
@@ -36,41 +36,22 @@ export default function FeaturedFixture({
       )}
 
       <div className="mt-10 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-4">
-        <div className="flex min-w-0 items-center gap-4">
-          {fixture.homeTeam.crest && (
-            <Image
-              src={fixture.homeTeam.crest}
-              alt={`${fixture.homeTeam.name} crest`}
-              width={64}
-              height={64}
-              className="h-16 w-16 shrink-0 object-contain"
-            />
-          )}
-
-          <h2 className="min-w-0 break-words text-xl font-bold">
-            {fixture.homeTeam.name}
-          </h2>
-        </div>
+        <ClubCard
+          name={fixture.homeTeam.name}
+          crest={fixture.homeTeam.crest}
+          badgeSize="large"
+        />
 
         <p className="whitespace-nowrap text-5xl font-bold">
           {hasScore ? `${homeScore}–${awayScore}` : "vs"}
         </p>
 
-        <div className="flex min-w-0 flex-row-reverse items-center gap-4 text-right">
-          {fixture.awayTeam.crest && (
-            <Image
-              src={fixture.awayTeam.crest}
-              alt={`${fixture.awayTeam.name} crest`}
-              width={64}
-              height={64}
-              className="h-16 w-16 shrink-0 object-contain"
-            />
-          )}
-
-          <h2 className="min-w-0 break-words text-xl font-bold">
-            {fixture.awayTeam.name}
-          </h2>
-        </div>
+        <ClubCard
+          name={fixture.awayTeam.name}
+          crest={fixture.awayTeam.crest}
+          align="right"
+          badgeSize="large"
+        />
       </div>
 
       <p className="mt-8 text-center text-sm text-slate-500">

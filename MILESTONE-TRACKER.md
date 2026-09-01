@@ -114,7 +114,7 @@ feat: display premier league fixtures
 
 ## Milestone 4 — Build the visual identity
 
-**Status:** `[~] In Progress`
+**Status:** `[x] Complete`
 
 **Goal:** Make iknowball look like a clean football analytics product.
 
@@ -122,9 +122,9 @@ feat: display premier league fixtures
 
 - [x] Choose final colours and typography.
 - [x] Create a reusable header.
-- [ ] Create club cards.
+- [x] Create club cards.
 - [x] Create match cards.
-- [ ] Create status and freshness badges.
+- [x] Create status and freshness badges.
 - [x] Add consistent spacing and responsive layouts.
 - [x] Remove generic Next.js branding.
 

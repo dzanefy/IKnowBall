@@ -4,12 +4,56 @@ import { useEffect, useState } from "react";
 import FixtureCard, { type Fixture } from "@/components/FixtureCard";
 import AppHeader from "@/components/AppHeader";
 import FeaturedFixture from "@/components/FeaturedFixture";
+import type { FormEntry, FormResult } from "@/components/ClubCard";
+
+function normalizeTeamName(name: string) {
+  return name.toLowerCase().replace(/\b(fc|afc)\b/g, "").replace(/[^a-z0-9]/g, "");
+}
 
 export default function Home() {
   const [fixtures, setFixtures] = useState<Fixture[]>([]);
   const [selectedFixture, setSelectedFixture] = useState<Fixture | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  const formByTeam = fixtures.reduce<Record<string, FormEntry[]>>(
+    (forms, fixture) => {
+      const score = fixture.score?.fullTime;
+
+      if (
+        fixture.status !== "FINISHED" ||
+        score?.home == null ||
+        score.away == null
+      ) {
+        return forms;
+      }
+
+      const homeResult: FormResult =
+        score.home > score.away ? "W" : score.home < score.away ? "L" : "D";
+      const awayResult: FormResult =
+        score.away > score.home ? "W" : score.away < score.home ? "L" : "D";
+
+      const homeKey = normalizeTeamName(fixture.homeTeam.name);
+      const awayKey = normalizeTeamName(fixture.awayTeam.name);
+
+      forms[homeKey] ??= [];
+      forms[awayKey] ??= [];
+      forms[homeKey].push({
+        fixtureId: fixture.id,
+        date: fixture.utcDate,
+        result: homeResult,
+      });
+      forms[awayKey].push({
+        fixtureId: fixture.id,
+        date: fixture.utcDate,
+        result: awayResult,
+      });
+
+      return forms;
+    },
+    {}
+  );
+
     const fixturesByMatchday = fixtures.reduce<Record<string, Fixture[]>>(
     (groups, fixture) => {
       const matchday = fixture.matchday ?? "Unknown";
@@ -94,7 +138,11 @@ export default function Home() {
 
                 <div className="grid gap-4 md:grid-cols-2">
                   {matchdayFixtures.map((fixture) => (
-                    <FixtureCard key={fixture.id} fixture={fixture} />
+                    <FixtureCard
+                      key={fixture.id}
+                      fixture={fixture}
+                      formByTeam={formByTeam}
+                    />
                   ))}
                 </div>
               </div>
