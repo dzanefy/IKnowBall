@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 
 type FootballDataMatch = {
   id: number;
@@ -31,6 +32,50 @@ function cleanTeamName(name = "") {
 }
 
 export async function GET() {
+  const storedFixtures = await prisma.fixture.findMany({
+  include: {
+    homeTeam: true,
+    awayTeam: true,
+  },
+  orderBy: {
+    utcDate: "asc",
+  },
+});
+
+if (storedFixtures.length > 0) {
+  return NextResponse.json({
+    matches: storedFixtures.map((fixture) => ({
+      id: fixture.id,
+      utcDate: fixture.utcDate.toISOString(),
+      status: fixture.status,
+      matchday: fixture.matchday,
+      lastUpdated: fixture.lastUpdated?.toISOString(),
+      homeTeam: {
+        id: fixture.homeTeam.id,
+        name: fixture.homeTeam.name,
+        crest: fixture.homeTeam.crest,
+      },
+      awayTeam: {
+        id: fixture.awayTeam.id,
+        name: fixture.awayTeam.name,
+        crest: fixture.awayTeam.crest,
+      },
+      score: {
+        fullTime: {
+          home: fixture.homeScore,
+          away: fixture.awayScore,
+        },
+      },
+      footballdata: fixture.footballdataMatchId
+        ? { match_id: fixture.footballdataMatchId }
+        : null,
+    })),
+    sources: {
+      footballData: "database",
+      footballdata: "database",
+    },
+  });
+}
   const footballDataKey = process.env.FOOTBALL_DATA_API_KEY;
 
   if (!footballDataKey) {

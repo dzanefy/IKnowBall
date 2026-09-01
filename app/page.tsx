@@ -112,18 +112,7 @@ export default function Home() {
 
     return groups;
   }, {});
-    (groups, fixture) => {
-      const matchday = fixture.matchday ?? "Unknown";
-
-      if (!groups[matchday]) {
-        groups[matchday] = [];
-      }
-
-      groups[matchday].push(fixture);
-      return groups;
-    },
-    {}
-  );
+    
 
   useEffect(() => {
     fetch("/api/fixtures")

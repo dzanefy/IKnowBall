@@ -1,0 +1,38 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Team {
+  id    Int     @id
+  name  String
+  slug  String  @unique
+  crest String?
+
+  homeFixtures Fixture[] @relation("HomeTeam")
+  awayFixtures Fixture[] @relation("AwayTeam")
+}
+
+model Fixture {
+  id       Int      @id
+  utcDate  DateTime
+  status   String
+  matchday Int?
+
+  homeTeamId Int
+  awayTeamId Int
+  homeScore  Int?
+  awayScore  Int?
+
+  footballdataMatchId Int?
+  lastUpdated         DateTime?
+
+  homeTeam Team @relation("HomeTeam", fields: [homeTeamId], references: [id])
+  awayTeam Team @relation("AwayTeam", fields: [awayTeamId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
