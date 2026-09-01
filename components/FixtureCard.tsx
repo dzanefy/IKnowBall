@@ -1,6 +1,9 @@
 import MatchEvents from "@/components/MatchEvents";
 import GoalScorerPreview from "@/components/GoalScorerPreview";
-import ClubBadge from "@/components/ClubBadge";
+import ClubCard, {
+  type FormEntry,
+  type FormResult,
+} from "@/components/ClubCard";
 import StatusBadge from "@/components/StatusBadge";
 
 export type Fixture = {
@@ -31,9 +34,31 @@ export type Fixture = {
 
 type FixtureCardProps = {
   fixture: Fixture;
+  formByTeam?: Record<string, FormEntry[]>;
 };
 
-export default function FixtureCard({ fixture }: FixtureCardProps) {
+function normalizeTeamName(name: string) {
+  return name
+    .toLowerCase()
+    .replace(/\b(fc|afc)\b/g, "")
+    .replace(/[^a-z0-9]/g, "");
+}
+
+function getRecentForm(
+  entries: FormEntry[] | undefined,
+  fixtureDate: string,
+  fixtureId: number
+): FormResult[] | undefined {
+  return entries
+    ?.filter(
+      (entry) => entry.date < fixtureDate || entry.fixtureId === fixtureId
+    )
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .slice(0, 5)
+    .map((entry) => entry.result);
+}
+
+export default function FixtureCard({ fixture, formByTeam }: FixtureCardProps) {
   const score = fixture.score?.fullTime;
   const homeScore = score?.home;
   const awayScore = score?.away;
@@ -55,31 +80,30 @@ export default function FixtureCard({ fixture }: FixtureCardProps) {
       </p>
 
       <div className="mt-5 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-4">
-  <span className="flex min-w-0 items-center gap-3 font-semibold">
-  <ClubBadge
-  name={fixture.homeTeam.name}
-  crest={fixture.homeTeam.crest}
-/>
-
-  <span className="min-w-0 break-words">
-    {fixture.homeTeam.name}
-  </span>
-</span>
+  <ClubCard
+    name={fixture.homeTeam.name}
+    crest={fixture.homeTeam.crest}
+    form={getRecentForm(
+      formByTeam?.[normalizeTeamName(fixture.homeTeam.name)],
+      fixture.utcDate,
+      fixture.id
+    )}
+  />
 
   <span className="whitespace-nowrap text-center text-xl font-bold">
     {hasScore ? `${homeScore} – ${awayScore}` : "vs"}
   </span>
 
-  <span className="flex min-w-0 flex-row-reverse items-center gap-3 text-right font-semibold">
-  <ClubBadge
-  name={fixture.awayTeam.name}
-  crest={fixture.awayTeam.crest}
-/>
-
-  <span className="min-w-0 break-words">
-    {fixture.awayTeam.name}
-  </span>
-</span>
+  <ClubCard
+    name={fixture.awayTeam.name}
+    crest={fixture.awayTeam.crest}
+    align="right"
+    form={getRecentForm(
+      formByTeam?.[normalizeTeamName(fixture.awayTeam.name)],
+      fixture.utcDate,
+      fixture.id
+    )}
+  />
 </div>
 
 {winner && (
