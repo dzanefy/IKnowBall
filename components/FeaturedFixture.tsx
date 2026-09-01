@@ -1,16 +1,10 @@
 import Image from "next/image";
 import type { Fixture } from "@/components/FixtureCard";
+import StatusBadge from "@/components/StatusBadge";
 
 type FeaturedFixtureProps = {
   fixture: Fixture;
 };
-
-function formatStatus(status: string) {
-  if (status === "FINISHED") return "Finished";
-  if (status === "TIMED" || status === "SCHEDULED") return "Upcoming";
-
-  return status.replaceAll("_", " ");
-}
 
 export default function FeaturedFixture({
   fixture,
@@ -27,21 +21,19 @@ export default function FeaturedFixture({
           Selected fixture
         </p>
 
-        <span
-          className={`rounded-full border px-3 py-1 text-xs font-semibold uppercase ${
-            fixture.status === "TIMED" || fixture.status === "SCHEDULED"
-              ? "border-orange-400/30 bg-orange-400/10 text-orange-300"
-              : "border-lime-400/30 bg-lime-400/10 text-lime-300"
-          }`}
-        >
-          {formatStatus(fixture.status)}
-        </span>
+        <StatusBadge status={fixture.status} />
       </div>
 
       <p className="mt-3 text-sm text-slate-400">
         Gameweek {fixture.matchday ?? "Unknown"} ·{" "}
         {new Date(fixture.utcDate).toLocaleString()}
       </p>
+
+      {fixture.lastUpdated && (
+        <p className="mt-2 text-xs text-slate-500">
+          Data updated {new Date(fixture.lastUpdated).toLocaleString()}
+        </p>
+      )}
 
       <div className="mt-10 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-4">
         <div className="flex min-w-0 items-center gap-4">

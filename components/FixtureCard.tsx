@@ -1,6 +1,7 @@
 import MatchEvents from "@/components/MatchEvents";
 import GoalScorerPreview from "@/components/GoalScorerPreview";
 import ClubBadge from "@/components/ClubBadge";
+import StatusBadge from "@/components/StatusBadge";
 
 export type Fixture = {
   id: number;
@@ -24,22 +25,9 @@ export type Fixture = {
   footballdata?: {
     match_id: number;
   } | null;
+
+  lastUpdated?: string;
 };
-
-function formatFixtureStatus(status: string) {
-  const labels: Record<string, string> = {
-    TIMED: "Upcoming",
-    SCHEDULED: "Upcoming",
-    IN_PLAY: "Live",
-    PAUSED: "Half-time",
-    FINISHED: "Finished",
-    POSTPONED: "Postponed",
-    CANCELLED: "Cancelled",
-    SUSPENDED: "Suspended",
-  };
-
-  return labels[status] ?? status.replaceAll("_", " ");
-}
 
 type FixtureCardProps = {
   fixture: Fixture;
@@ -100,15 +88,9 @@ export default function FixtureCard({ fixture }: FixtureCardProps) {
   </p>
 )}
 
-      <p
-        className={`mt-5 text-sm ${
-          fixture.status === "TIMED" || fixture.status === "SCHEDULED"
-            ? "text-orange-400"
-            : "text-lime-400"
-        }`}
-      >
-        {formatFixtureStatus(fixture.status)}
-      </p>
+      <div className="mt-5">
+        <StatusBadge status={fixture.status} />
+      </div>
       {fixture.status === "FINISHED" && fixture.footballdata?.match_id && (
   <GoalScorerPreview
     matchId={fixture.footballdata.match_id}
