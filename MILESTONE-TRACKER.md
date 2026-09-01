@@ -173,19 +173,18 @@ feat: add premier league team pages
 
 ## Milestone 6 — Store football data
 
-**Status:** `[ ] Not started`
-
+**Status:** `[x] Complete`
 **Goal:** Save provider data so visitors do not consume API requests directly.
 
 ### Create
 
-- [ ] Create a free Neon or Supabase PostgreSQL database.
-- [ ] Add Prisma.
-- [ ] Create team and fixture tables.
-- [ ] Add `DATABASE_URL` locally and in Vercel later.
-- [ ] Create a sync script.
-- [ ] Upsert fixtures without duplicates.
-- [ ] Record when data was last updated.
+- [x] Create a free Neon or Supabase PostgreSQL database.
+- [x] Add Prisma.
+- [x] Create team and fixture tables.
+- [x] Add `DATABASE_URL` locally and in Vercel later.
+- [x] Create a sync script.
+- [x] Upsert fixtures without duplicates.
+- [x] Record when data was last updated.
 
 ### Complete when
 
