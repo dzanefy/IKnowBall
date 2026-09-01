@@ -1,13 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import FixtureCard, { type Fixture } from "@/components/FixtureCard";
 import AppHeader from "@/components/AppHeader";
 import FeaturedFixture from "@/components/FeaturedFixture";
+import TeamGrid from "@/components/TeamGrid";
+import FixtureFilters from "@/components/FixtureFilters";
+import { premierLeagueTeams } from "@/lib/teams";
 import type { FormEntry, FormResult } from "@/components/ClubCard";
 
 function normalizeTeamName(name: string) {
-  return name.toLowerCase().replace(/\b(fc|afc)\b/g, "").replace(/[^a-z0-9]/g, "");
+  return name
+    .toLowerCase()
+    .replace(/\b(fc|afc)\b/g, "")
+    .replace(/[^a-z0-9]/g, "");
 }
 
 export default function Home() {
@@ -15,6 +21,42 @@ export default function Home() {
   const [selectedFixture, setSelectedFixture] = useState<Fixture | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [selectedTeams, setSelectedTeams] = useState<string[]>([]);
+  const [selectedGameweeks, setSelectedGameweeks] = useState<number[]>([]);
+
+  const gameweeks = useMemo(
+    () =>
+      [...new Set(
+        fixtures
+          .map((fixture) => fixture.matchday)
+          .filter((matchday): matchday is number => matchday != null)
+      )].sort((a, b) => a - b),
+    [fixtures]
+  );
+
+  const filteredFixtures = useMemo(
+    () =>
+      fixtures.filter((fixture) => {
+        const teamMatches =
+          selectedTeams.length === 0 ||
+          selectedTeams.some((team) => {
+            const normalizedTeam = normalizeTeamName(team);
+
+            return (
+              normalizedTeam === normalizeTeamName(fixture.homeTeam.name) ||
+              normalizedTeam === normalizeTeamName(fixture.awayTeam.name)
+            );
+          });
+
+        const gameweekMatches =
+          selectedGameweeks.length === 0 ||
+          (fixture.matchday != null &&
+            selectedGameweeks.includes(fixture.matchday));
+
+        return teamMatches && gameweekMatches;
+      }),
+    [fixtures, selectedGameweeks, selectedTeams]
+  );
 
   const formByTeam = fixtures.reduce<Record<string, FormEntry[]>>(
     (forms, fixture) => {
@@ -30,6 +72,7 @@ export default function Home() {
 
       const homeResult: FormResult =
         score.home > score.away ? "W" : score.home < score.away ? "L" : "D";
+
       const awayResult: FormResult =
         score.away > score.home ? "W" : score.away < score.home ? "L" : "D";
 
@@ -38,11 +81,13 @@ export default function Home() {
 
       forms[homeKey] ??= [];
       forms[awayKey] ??= [];
+
       forms[homeKey].push({
         fixtureId: fixture.id,
         date: fixture.utcDate,
         result: homeResult,
       });
+
       forms[awayKey].push({
         fixtureId: fixture.id,
         date: fixture.utcDate,
@@ -54,7 +99,19 @@ export default function Home() {
     {}
   );
 
-    const fixturesByMatchday = fixtures.reduce<Record<string, Fixture[]>>(
+  const fixturesByMatchday = filteredFixtures.reduce<
+    Record<string, Fixture[]>
+  >((groups, fixture) => {
+    const matchday = fixture.matchday ?? "Unknown";
+
+    if (!groups[matchday]) {
+      groups[matchday] = [];
+    }
+
+    groups[matchday].push(fixture);
+
+    return groups;
+  }, {});
     (groups, fixture) => {
       const matchday = fixture.matchday ?? "Unknown";
 
@@ -63,7 +120,6 @@ export default function Home() {
       }
 
       groups[matchday].push(fixture);
-
       return groups;
     },
     {}
@@ -106,6 +162,31 @@ export default function Home() {
         <p className="mt-4 max-w-xl text-slate-400">
           Football forecasts, fixture data and lineup intelligence.
         </p>
+        <TeamGrid />
+        <FixtureFilters
+          teams={premierLeagueTeams}
+          gameweeks={gameweeks}
+          selectedTeams={selectedTeams}
+          selectedGameweeks={selectedGameweeks}
+          onToggleTeam={(teamName) =>
+            setSelectedTeams((current) =>
+              current.includes(teamName)
+                ? current.filter((team) => team !== teamName)
+                : [...current, teamName]
+            )
+          }
+          onToggleGameweek={(gameweek) =>
+            setSelectedGameweeks((current) =>
+              current.includes(gameweek)
+                ? current.filter((value) => value !== gameweek)
+                : [...current, gameweek]
+            )
+          }
+          onClear={() => {
+            setSelectedTeams([]);
+            setSelectedGameweeks([]);
+          }}
+        />
         {selectedFixture && (
           <div className="mt-10">
             <FeaturedFixture fixture={selectedFixture} />
