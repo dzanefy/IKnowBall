@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function AppHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-slate-800/80 bg-slate-950/90 backdrop-blur">
@@ -21,9 +23,18 @@ export default function AppHeader() {
           </p>
         </div>
 
-        <span className="rounded-full border border-teal-400/30 bg-teal-400/10 px-4 py-2 text-xs font-bold uppercase tracking-wider text-teal-300">
-          AI-powered
-        </span>
+        <div className="flex items-center gap-4">
+          <Link
+            href="/how-it-works"
+            className="hidden text-sm font-semibold text-slate-300 transition hover:text-lime-400 sm:block"
+          >
+            How it works
+          </Link>
+
+          <span className="rounded-full border border-teal-400/30 bg-teal-400/10 px-4 py-2 text-xs font-bold uppercase tracking-wider text-teal-300">
+            AI-powered
+          </span>
+        </div>
       </div>
     </header>
   );
