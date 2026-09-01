@@ -2,6 +2,18 @@
 
 Use this document as the project checklist. Complete and commit one milestone at a time. The goal is not to rush; each milestone should leave the app in a working or testable state.
 
+## Git workflow
+
+Keep `main` as the stable branch. New features, experiments and larger fixes should use their own branches:
+
+```bash
+git switch -c feature/short-description
+```
+
+Commit work on that feature branch, push it to GitHub, review it, and merge it into `main` when complete. Do not make all future development commits directly on `main`.
+
+Suggested branch names include `feature/match-events`, `feature/predictions`, `feature/lineups` and `fix/fixture-status`.
+
 ## Status key
 
 - `[ ]` Not started
@@ -47,9 +59,9 @@ chore: complete initial project foundation
 - [x] Send the API key only from the server.
 - [x] Request Premier League fixtures.
 - [x] Add friendly error handling.
-- [ ] Add Footballdata.io as a current-season enrichment provider.
-- [ ] Match provider fixtures using teams and kickoff time, not vendor IDs alone.
-- [ ] Fall back to football-data.org when Footballdata.io is unavailable.
+- [x] Add Footballdata.io as a current-season enrichment provider.
+- [x] Match provider fixtures using teams and kickoff time, not vendor IDs alone.
+- [x] Fall back to football-data.org when Footballdata.io is unavailable.
 - [x] Test `/api/fixtures` in the browser.
 
 ### Complete when
