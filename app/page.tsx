@@ -111,8 +111,7 @@ export default function Home() {
     groups[matchday].push(fixture);
 
     return groups;
-  }, 
-  {});
+  }, {});
 
   useEffect(() => {
     fetch("/api/fixtures")
