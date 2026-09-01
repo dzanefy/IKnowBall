@@ -3,9 +3,11 @@
 import { useEffect, useState } from "react";
 import FixtureCard, { type Fixture } from "@/components/FixtureCard";
 import AppHeader from "@/components/AppHeader";
+import FeaturedFixture from "@/components/FeaturedFixture";
 
 export default function Home() {
   const [fixtures, setFixtures] = useState<Fixture[]>([]);
+  const [selectedFixture, setSelectedFixture] = useState<Fixture | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
     const fixturesByMatchday = fixtures.reduce<Record<string, Fixture[]>>(
@@ -33,7 +35,9 @@ export default function Home() {
         return response.json();
       })
       .then((data) => {
-        setFixtures(data.matches ?? []);
+        const loadedFixtures = data.matches ?? [];
+        setFixtures(loadedFixtures);
+        setSelectedFixture(loadedFixtures[0] ?? null);
       })
       .catch(() => {
         setError("Fixtures could not be loaded.");
@@ -59,7 +63,8 @@ export default function Home() {
           Football forecasts, fixture data and lineup intelligence.
         </p>
 
-        <section className="mt-12">
+        <div className="mt-12 grid gap-8 md:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] md:items-start">
+          <section>
           <h2 className="mb-6 text-2xl font-semibold">Fixtures</h2>
 
           {loading && <p className="text-slate-400">Loading fixtures...</p>}
@@ -83,7 +88,7 @@ export default function Home() {
                   {matchday === "Unknown" ? "Matchday Unknown" : `Gameweek ${matchday}`}
                 </h3>
 
-                <div className="grid gap-4 md:grid-cols-2">
+                <div className="grid gap-4">
                   {matchdayFixtures.map((fixture) => (
                     <FixtureCard key={fixture.id} fixture={fixture} />
                   ))}
@@ -91,8 +96,15 @@ export default function Home() {
               </div>
             ))}
         </section>
+
+        {selectedFixture && (
+          <div className="lg:sticky lg:top-6">
+            <FeaturedFixture fixture={selectedFixture} />
+          </div>
+        )}
+        </div>
       </div>
-        </main>
+    </main>
   </>
 );
-} 
+}
