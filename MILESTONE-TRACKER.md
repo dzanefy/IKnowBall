@@ -2,6 +2,18 @@
 
 Use this document as the project checklist. Complete and commit one milestone at a time. The goal is not to rush; each milestone should leave the app in a working or testable state.
 
+## Git workflow
+
+Keep `main` as the stable branch. New features, experiments and larger fixes should use their own branches:
+
+```bash
+git switch -c feature/short-description
+```
+
+Commit work on that feature branch, push it to GitHub, review it, and merge it into `main` when complete. Do not make all future development commits directly on `main`.
+
+Suggested branch names include `feature/match-events`, `feature/predictions`, `feature/lineups` and `fix/fixture-status`.
+
 ## Status key
 
 - `[ ]` Not started
@@ -47,9 +59,9 @@ chore: complete initial project foundation
 - [x] Send the API key only from the server.
 - [x] Request Premier League fixtures.
 - [x] Add friendly error handling.
-- [ ] Add Footballdata.io as a current-season enrichment provider.
-- [ ] Match provider fixtures using teams and kickoff time, not vendor IDs alone.
-- [ ] Fall back to football-data.org when Footballdata.io is unavailable.
+- [x] Add Footballdata.io as a current-season enrichment provider.
+- [x] Match provider fixtures using teams and kickoff time, not vendor IDs alone.
+- [x] Fall back to football-data.org when Footballdata.io is unavailable.
 - [x] Test `/api/fixtures` in the browser.
 
 ### Complete when
@@ -68,28 +80,29 @@ feat: connect premier league fixture data
 
 ## Milestone 3 — Display real fixtures
 
-**Status:** `[~] In Progress`
+**Status:** `[x] Complete`
 
 **Goal:** Replace the default homepage with an initial iknowball fixture experience.
 
 ### Create
 
-- [ ] Create a fixture data type.
-- [ ] Add a fixture card component.
-- [ ] Display home team, away team, date and status.
-- [ ] Display score when available.
-- [ ] Show goal scorers and scoring minutes for completed matches.
-- [ ] Show missed penalties for completed matches.
-- [ ] Show red cards and dismissal minutes for completed matches.
-- [ ] Add loading and error states.
-- [ ] Add an empty-state message.
-- [ ] Make the page responsive on mobile.
+- [x] Create a fixture data type.
+- [x] Add a fixture card component.
+- [x] Display home team, away team, date and status.
+- [x] Display score when available.
+- [x] Show goal scorers and scoring minutes for completed matches.
+- [x] Show missed penalties for completed matches.
+- [x] Show red cards and dismissal minutes for completed matches.
+- [x] Add loading and error states.
+- [x] Add an empty-state message.
+- [x] Make the page responsive on mobile.
 
 ### Complete when
 
 - Real Premier League fixtures appear at the homepage.
 - The page remains usable if the API is slow or unavailable.
 - Event details are shown only for completed matches and display an unavailable state when the provider does not supply them.
+- Substitutions show the team, player coming on, player coming off and available substitution time.
 
 **Suggested commit:**
 
@@ -101,19 +114,19 @@ feat: display premier league fixtures
 
 ## Milestone 4 — Build the visual identity
 
-**Status:** `[ ] Not started`
+**Status:** `[~] In Progress`
 
 **Goal:** Make iknowball look like a clean football analytics product.
 
 ### Create
 
-- [ ] Choose final colours and typography.
-- [ ] Create a reusable header.
+- [x] Choose final colours and typography.
+- [x] Create a reusable header.
 - [ ] Create club cards.
-- [ ] Create match cards.
+- [x] Create match cards.
 - [ ] Create status and freshness badges.
-- [ ] Add consistent spacing and responsive layouts.
-- [ ] Remove generic Next.js branding.
+- [x] Add consistent spacing and responsive layouts.
+- [x] Remove generic Next.js branding.
 
 ### Complete when
 

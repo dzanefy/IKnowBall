@@ -1,43 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
-type Fixture = {
-  id: number;
-  utcDate: string;
-  status: string;
-  matchday: number | null;
-  homeTeam: {
-    name: string;
-  };
-  awayTeam: {
-    name: string;
-  };
-  score?: {
-    fullTime?: {
-      home: number | null;
-      away: number | null;
-    };
-  };
-};
-
-function formatFixtureStatus(status: string) {
-  const labels: Record<string, string> = {
-    TIMED: "Upcoming",
-    SCHEDULED: "Upcoming",
-    IN_PLAY: "Live",
-    PAUSED: "Half-time",
-    FINISHED: "Finished",
-    POSTPONED: "Postponed",
-    CANCELLED: "Cancelled",
-    SUSPENDED: "Suspended",
-  };
-
-  return labels[status] ?? status.replaceAll("_", " ");
-}
+import FixtureCard, { type Fixture } from "@/components/FixtureCard";
+import AppHeader from "@/components/AppHeader";
+import FeaturedFixture from "@/components/FeaturedFixture";
 
 export default function Home() {
   const [fixtures, setFixtures] = useState<Fixture[]>([]);
+  const [selectedFixture, setSelectedFixture] = useState<Fixture | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
     const fixturesByMatchday = fixtures.reduce<Record<string, Fixture[]>>(
@@ -65,7 +35,9 @@ export default function Home() {
         return response.json();
       })
       .then((data) => {
-        setFixtures(data.matches ?? []);
+        const loadedFixtures = data.matches ?? [];
+        setFixtures(loadedFixtures);
+        setSelectedFixture(loadedFixtures[0] ?? null);
       })
       .catch(() => {
         setError("Fixtures could not be loaded.");
@@ -76,6 +48,9 @@ export default function Home() {
   }, []);
 
   return (
+  <>
+    <AppHeader />
+
     <main className="min-h-screen bg-slate-950 px-6 py-12 text-white">
       <div className="mx-auto max-w-5xl">
         <p className="mb-3 text-sm font-semibold uppercase tracking-[0.3em] text-lime-400">
@@ -88,7 +63,8 @@ export default function Home() {
           Football forecasts, fixture data and lineup intelligence.
         </p>
 
-        <section className="mt-12">
+        <div className="mt-12 grid gap-8 md:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] md:items-start">
+          <section>
           <h2 className="mb-6 text-2xl font-semibold">Fixtures</h2>
 
           {loading && <p className="text-slate-400">Loading fixtures...</p>}
@@ -112,45 +88,23 @@ export default function Home() {
                   {matchday === "Unknown" ? "Matchday Unknown" : `Gameweek ${matchday}`}
                 </h3>
 
-               <div className="grid gap-4 md:grid-cols-2">
-  {matchdayFixtures.map((fixture) => {
-    const score = fixture.score?.fullTime;
-    const hasScore = score?.home != null && score?.away != null;
-
-    return (
-      <article
-        key={fixture.id}
-        className="rounded-2xl border border-slate-800 bg-slate-900 p-6"
-      >
-        <p className="text-sm text-slate-400">
-          {new Date(fixture.utcDate).toLocaleString()}
-        </p>
-
-        <div className="mt-5 flex items-center justify-between gap-4">
-          <span className="font-medium">
-            {fixture.homeTeam.name}
-          </span>
-
-          <span className="text-lg font-bold">
-            {hasScore ? `${score.home} – ${score.away}` : "vs"}
-          </span>
-
-          <span className="text-right font-medium">
-            {fixture.awayTeam.name}
-          </span>
-        </div>
-
-                      <p className="mt-5 text-sm text-lime-400">
-                        {formatFixtureStatus(fixture.status)}
-                      </p>
-      </article>
-    );
-  })}
-</div>
+                <div className="grid gap-4">
+                  {matchdayFixtures.map((fixture) => (
+                    <FixtureCard key={fixture.id} fixture={fixture} />
+                  ))}
+                </div>
               </div>
             ))}
         </section>
+
+        {selectedFixture && (
+          <div className="lg:sticky lg:top-6">
+            <FeaturedFixture fixture={selectedFixture} />
+          </div>
+        )}
+        </div>
       </div>
     </main>
-  );
-} 
+  </>
+);
+}
