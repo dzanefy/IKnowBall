@@ -86,22 +86,23 @@ feat: connect premier league fixture data
 
 ### Create
 
-- [ ] Create a fixture data type.
+- [x] Create a fixture data type.
 - [ ] Add a fixture card component.
-- [ ] Display home team, away team, date and status.
-- [ ] Display score when available.
-- [ ] Show goal scorers and scoring minutes for completed matches.
+- [x] Display home team, away team, date and status.
+- [x] Display score when available.
+- [x] Show goal scorers and scoring minutes for completed matches.
 - [ ] Show missed penalties for completed matches.
-- [ ] Show red cards and dismissal minutes for completed matches.
-- [ ] Add loading and error states.
-- [ ] Add an empty-state message.
-- [ ] Make the page responsive on mobile.
+- [x] Show red cards and dismissal minutes for completed matches.
+- [x] Add loading and error states.
+- [x] Add an empty-state message.
+- [x] Make the page responsive on mobile.
 
 ### Complete when
 
 - Real Premier League fixtures appear at the homepage.
 - The page remains usable if the API is slow or unavailable.
 - Event details are shown only for completed matches and display an unavailable state when the provider does not supply them.
+- Substitutions show the team, player coming on, player coming off and available substitution time.
 
 **Suggested commit:**
 
