@@ -7,6 +7,7 @@ import FeaturedFixture from "@/components/FeaturedFixture";
 import TeamGrid from "@/components/TeamGrid";
 import FixtureFilters from "@/components/FixtureFilters";
 import { premierLeagueTeams } from "@/lib/teams";
+import type { FormEntry, FormResult } from "@/components/ClubCard";
 
 function normalizeTeamName(name: string) {
   return name
@@ -40,11 +41,13 @@ export default function Home() {
           selectedTeams.length === 0 ||
           selectedTeams.some((team) => {
             const normalizedTeam = normalizeTeamName(team);
+
             return (
               normalizedTeam === normalizeTeamName(fixture.homeTeam.name) ||
               normalizedTeam === normalizeTeamName(fixture.awayTeam.name)
             );
           });
+
         const gameweekMatches =
           selectedGameweeks.length === 0 ||
           (fixture.matchday != null &&
@@ -55,7 +58,60 @@ export default function Home() {
     [fixtures, selectedGameweeks, selectedTeams]
   );
 
-  const fixturesByMatchday = filteredFixtures.reduce<Record<string, Fixture[]>>(
+  const formByTeam = fixtures.reduce<Record<string, FormEntry[]>>(
+    (forms, fixture) => {
+      const score = fixture.score?.fullTime;
+
+      if (
+        fixture.status !== "FINISHED" ||
+        score?.home == null ||
+        score.away == null
+      ) {
+        return forms;
+      }
+
+      const homeResult: FormResult =
+        score.home > score.away ? "W" : score.home < score.away ? "L" : "D";
+
+      const awayResult: FormResult =
+        score.away > score.home ? "W" : score.away < score.home ? "L" : "D";
+
+      const homeKey = normalizeTeamName(fixture.homeTeam.name);
+      const awayKey = normalizeTeamName(fixture.awayTeam.name);
+
+      forms[homeKey] ??= [];
+      forms[awayKey] ??= [];
+
+      forms[homeKey].push({
+        fixtureId: fixture.id,
+        date: fixture.utcDate,
+        result: homeResult,
+      });
+
+      forms[awayKey].push({
+        fixtureId: fixture.id,
+        date: fixture.utcDate,
+        result: awayResult,
+      });
+
+      return forms;
+    },
+    {}
+  );
+
+  const fixturesByMatchday = filteredFixtures.reduce<
+    Record<string, Fixture[]>
+  >((groups, fixture) => {
+    const matchday = fixture.matchday ?? "Unknown";
+
+    if (!groups[matchday]) {
+      groups[matchday] = [];
+    }
+
+    groups[matchday].push(fixture);
+
+    return groups;
+  }, {});
     (groups, fixture) => {
       const matchday = fixture.matchday ?? "Unknown";
 
@@ -163,7 +219,11 @@ export default function Home() {
 
                 <div className="grid gap-4 md:grid-cols-2">
                   {matchdayFixtures.map((fixture) => (
-                    <FixtureCard key={fixture.id} fixture={fixture} />
+                    <FixtureCard
+                      key={fixture.id}
+                      fixture={fixture}
+                      formByTeam={formByTeam}
+                    />
                   ))}
                 </div>
               </div>
