@@ -80,18 +80,18 @@ feat: connect premier league fixture data
 
 ## Milestone 3 — Display real fixtures
 
-**Status:** `[~] In Progress`
+**Status:** `[x] Complete`
 
 **Goal:** Replace the default homepage with an initial iknowball fixture experience.
 
 ### Create
 
 - [x] Create a fixture data type.
-- [ ] Add a fixture card component.
+- [x] Add a fixture card component.
 - [x] Display home team, away team, date and status.
 - [x] Display score when available.
 - [x] Show goal scorers and scoring minutes for completed matches.
-- [ ] Show missed penalties for completed matches.
+- [x] Show missed penalties for completed matches.
 - [x] Show red cards and dismissal minutes for completed matches.
 - [x] Add loading and error states.
 - [x] Add an empty-state message.

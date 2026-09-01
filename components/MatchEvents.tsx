@@ -101,6 +101,13 @@ export default function MatchEvents({
               const isGoal = event.event_type === "goal";
               const isYellowCard = event.event_type === "yellow_card";
               const isRedCard = event.event_type === "red_card";
+              const isPenalty = event.event_type === "penalty";
+              const penaltyDetail = event.detail?.toLowerCase() ?? "";
+              const isMissedPenalty =
+                isPenalty &&
+                ["miss", "saved", "fail", "off target", "wide"].some(
+                  (term) => penaltyDetail.includes(term)
+                );
               const teamName =
                 event.team_side === "home"
                   ? homeTeamName
@@ -144,9 +151,11 @@ export default function MatchEvents({
                             ? "font-bold text-lime-400"
                             : isYellowCard
                               ? "font-semibold text-yellow-300"
-                              : isRedCard
-                                ? "font-semibold text-red-400"
-                                : "capitalize text-slate-200"
+                          : isRedCard
+                            ? "font-semibold text-red-400"
+                            : isMissedPenalty
+                              ? "font-semibold text-orange-300"
+                            : "capitalize text-slate-200"
                         }
                       >
                         {isGoal
@@ -155,10 +164,12 @@ export default function MatchEvents({
                             ? "Yellow card"
                             : isRedCard
                               ? "Red card"
+                              : isMissedPenalty
+                                ? "Missed penalty"
                               : event.event_type.replaceAll("_", " ")}
                       </span>
                       <span className="text-slate-400 sm:text-right">
-                        {isGoal && (
+                        {(isGoal || isMissedPenalty) && (
                           <span className="mr-2 text-slate-500">
                             {teamName}:
                           </span>
