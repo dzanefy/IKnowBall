@@ -62,9 +62,13 @@ export default function Home() {
         <p className="mt-4 max-w-xl text-slate-400">
           Football forecasts, fixture data and lineup intelligence.
         </p>
+        {selectedFixture && (
+          <div className="mt-10">
+            <FeaturedFixture fixture={selectedFixture} />
+          </div>
+          )}
 
-        <div className="mt-12 grid gap-8 md:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] md:items-start">
-          <section>
+        <section className="mt-12">
           <h2 className="mb-6 text-2xl font-semibold">Fixtures</h2>
 
           {loading && <p className="text-slate-400">Loading fixtures...</p>}
@@ -88,7 +92,7 @@ export default function Home() {
                   {matchday === "Unknown" ? "Matchday Unknown" : `Gameweek ${matchday}`}
                 </h3>
 
-                <div className="grid gap-4">
+                <div className="grid gap-4 md:grid-cols-2">
                   {matchdayFixtures.map((fixture) => (
                     <FixtureCard key={fixture.id} fixture={fixture} />
                   ))}
@@ -96,13 +100,6 @@ export default function Home() {
               </div>
             ))}
         </section>
-
-        {selectedFixture && (
-          <div className="lg:sticky lg:top-6">
-            <FeaturedFixture fixture={selectedFixture} />
-          </div>
-        )}
-        </div>
       </div>
     </main>
   </>

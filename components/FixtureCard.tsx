@@ -1,5 +1,6 @@
 import MatchEvents from "@/components/MatchEvents";
 import GoalScorerPreview from "@/components/GoalScorerPreview";
+import ClubBadge from "@/components/ClubBadge";
 
 export type Fixture = {
   id: number;
@@ -7,10 +8,12 @@ export type Fixture = {
   status: string;
   matchday: number | null;
   homeTeam: {
-    name: string;
+  name: string;
+    crest?: string;
   };
   awayTeam: {
     name: string;
+    crest?: string;
   };
   score?: {
     fullTime?: {
@@ -64,17 +67,31 @@ export default function FixtureCard({ fixture }: FixtureCardProps) {
       </p>
 
       <div className="mt-5 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-4">
-  <span className="min-w-0 break-words font-semibold">
+  <span className="flex min-w-0 items-center gap-3 font-semibold">
+  <ClubBadge
+  name={fixture.homeTeam.name}
+  crest={fixture.homeTeam.crest}
+/>
+
+  <span className="min-w-0 break-words">
     {fixture.homeTeam.name}
   </span>
+</span>
 
   <span className="whitespace-nowrap text-center text-xl font-bold">
     {hasScore ? `${homeScore} – ${awayScore}` : "vs"}
   </span>
 
-  <span className="min-w-0 break-words text-right font-semibold">
+  <span className="flex min-w-0 flex-row-reverse items-center gap-3 text-right font-semibold">
+  <ClubBadge
+  name={fixture.awayTeam.name}
+  crest={fixture.awayTeam.crest}
+/>
+
+  <span className="min-w-0 break-words">
     {fixture.awayTeam.name}
   </span>
+</span>
 </div>
 
 {winner && (
@@ -83,7 +100,13 @@ export default function FixtureCard({ fixture }: FixtureCardProps) {
   </p>
 )}
 
-      <p className="mt-5 text-sm text-lime-400">
+      <p
+        className={`mt-5 text-sm ${
+          fixture.status === "TIMED" || fixture.status === "SCHEDULED"
+            ? "text-orange-400"
+            : "text-lime-400"
+        }`}
+      >
         {formatFixtureStatus(fixture.status)}
       </p>
       {fixture.status === "FINISHED" && fixture.footballdata?.match_id && (
