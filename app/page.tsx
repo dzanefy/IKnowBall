@@ -112,7 +112,6 @@ export default function Home() {
 
     return groups;
   }, {});
-    
 
   useEffect(() => {
     fetch("/api/fixtures")

@@ -144,19 +144,19 @@ style: establish iknowball visual identity
 
 ## Milestone 5 — Team selection and team pages
 
-**Status:** `[ ] Not started`
+**Status:** `[x] Complete`
 
 **Goal:** Allow users to select a Premier League team and see its fixtures.
 
 ### Create
 
-- [ ] Display the 20 Premier League teams.
-- [ ] Add team slugs and dynamic routes.
-- [ ] Create `/teams/[slug]`.
-- [ ] Show the selected team’s next fixture.
-- [ ] Show upcoming fixtures.
-- [ ] Show recent results where available.
-- [ ] Add a not-found state for invalid teams.
+- [x] Display the 20 Premier League teams.
+- [x] Add team slugs and dynamic routes.
+- [x] Create `/teams/[slug]`.
+- [x] Show the selected team’s next fixture.
+- [x] Show upcoming fixtures.
+- [x] Show recent results where available.
+- [x] Add a not-found state for invalid teams.
 
 ### Complete when
 
