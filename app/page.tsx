@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import MatchEvents from "@/components/MatchEvents";
 
 type Fixture = {
   id: number;
@@ -19,6 +20,9 @@ type Fixture = {
       away: number | null;
     };
   };
+  footballdata?: {
+    match_id: number;
+  } | null;
 };
 
 function formatFixtureStatus(status: string) {
@@ -143,6 +147,14 @@ export default function Home() {
                       <p className="mt-5 text-sm text-lime-400">
                         {formatFixtureStatus(fixture.status)}
                       </p>
+                      {fixture.status === "FINISHED" &&
+                        fixture.footballdata?.match_id && (
+                          <MatchEvents
+                            matchId={fixture.footballdata.match_id}
+                            homeTeamName={fixture.homeTeam.name}
+                            awayTeamName={fixture.awayTeam.name}
+                          />
+                      )}
       </article>
     );
   })}
