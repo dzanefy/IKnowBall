@@ -156,6 +156,10 @@ style: establish iknowball visual identity
 - [x] Show the selected team’s next fixture.
 - [x] Show upcoming fixtures.
 - [x] Show recent results where available.
+- [x] Add a team squad API route.
+- [x] Display saved squad players.
+- [x] Group players by goalkeeper, defence, midfield and attack.
+- [x] Show shirt numbers where the provider supplies them.
 - [x] Add a not-found state for invalid teams.
 
 ### Complete when
@@ -202,19 +206,19 @@ feat: store football fixtures in postgres
 
 ## Milestone 7 — Add the prediction baseline
 
-**Status:** `[ ] Not started`
+**Status:** `[x] Complete`
 
 **Goal:** Generate an explainable first forecast.
 
 ### Create
 
-- [ ] Calculate recent goals scored and conceded.
-- [ ] Calculate home and away performance.
-- [ ] Add a home-advantage value.
-- [ ] Calculate expected goals for both teams.
-- [ ] Use Poisson probabilities to calculate possible scores.
-- [ ] Display the most likely score.
-- [ ] Display home win, draw and away win probabilities.
+- [x] Calculate recent goals scored and conceded.
+- [x] Calculate home and away performance.
+- [x] Add a home-advantage value.
+- [x] Calculate expected goals for both teams.
+- [x] Use Poisson probabilities to calculate possible scores.
+- [x] Display the most likely score.
+- [x] Display home win, draw and away win probabilities.
 
 ### Complete when
 
