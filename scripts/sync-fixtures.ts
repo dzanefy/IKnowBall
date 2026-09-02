@@ -11,6 +11,19 @@ type ApiTeam = {
   crest?: string;
 };
 
+type ApiPlayer = {
+  id: number;
+  name: string;
+  position?: string | null;
+  nationality?: string | null;
+  dateOfBirth?: string | null;
+  shirtNumber?: number | null;
+};
+
+type ApiTeamDetails = ApiTeam & {
+  squad?: ApiPlayer[];
+};
+
 type ApiMatch = {
   id: number;
   utcDate: string;
@@ -26,6 +39,10 @@ type ApiMatch = {
     };
   };
 };
+
+function wait(milliseconds: number) {
+  return new Promise((resolve) => setTimeout(resolve, milliseconds));
+}
 
 function createSlug(name: string) {
   return name
@@ -120,6 +137,62 @@ async function main() {
       },
     });
   }
+  const teamIds = [
+  ...new Set(
+    matches.flatMap((match) => [
+      match.homeTeam.id,
+      match.awayTeam.id,
+    ])
+  ),
+];
+
+for (const teamId of teamIds) {
+await wait(7000);
+  const teamResponse = await fetch(
+    `https://api.football-data.org/v4/teams/${teamId}`,
+    {
+      headers: {
+        "X-Auth-Token": apiKey,
+      },
+    }
+  );
+
+  if (!teamResponse.ok) {
+    console.warn(`Could not load squad for team ${teamId}`);
+    continue;
+  }
+
+  const teamDetails = (await teamResponse.json()) as ApiTeamDetails;
+
+  for (const player of teamDetails.squad ?? []) {
+    await prisma!.player.upsert({
+      where: { id: player.id },
+      update: {
+        name: player.name,
+        position: player.position ?? null,
+        nationality: player.nationality ?? null,
+        dateOfBirth: player.dateOfBirth
+          ? new Date(player.dateOfBirth)
+          : null,
+        shirtNumber: player.shirtNumber ?? null,
+        teamId,
+      },
+      create: {
+        id: player.id,
+        name: player.name,
+        position: player.position ?? null,
+        nationality: player.nationality ?? null,
+        dateOfBirth: player.dateOfBirth
+          ? new Date(player.dateOfBirth)
+          : null,
+        shirtNumber: player.shirtNumber ?? null,
+        teamId,
+      },
+    });
+  }
+
+  console.log(`Synced squad for ${teamDetails.name}.`);
+}
 
   console.log(`Synced ${matches.length} fixtures.`);
 }
